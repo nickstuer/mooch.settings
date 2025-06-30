@@ -21,7 +21,7 @@ This Python package is a collection of useful Python code that is commonly used 
 
 
 ### Settings File
-Uses a TOML settings file. Easily get/set settingsuration values. Automatically sets values to defaults if they're not currently saved in the settingsuration file.
+Uses a TOML settings file. Easily get/set settings values. Automatically sets values to defaults if they're not currently saved in the setting file.
 
 
 ## 🛠 Install
