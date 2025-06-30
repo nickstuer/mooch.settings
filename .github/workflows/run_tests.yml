@@ -54,67 +54,67 @@ jobs:
       - run: pip install coverage
 
       - name: Download coverage artifacts - Linux
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: coverage-ubuntu-latest-py3.9
           path: coverage_reports/ubuntu-py3.9
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-ubuntu-latest-py3.10
           path: coverage_reports/ubuntu-py3.10
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-ubuntu-latest-py3.11
           path: coverage_reports/ubuntu-py3.11
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-ubuntu-latest-py3.12
           path: coverage_reports/ubuntu-py3.12
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-ubuntu-latest-py3.13
           path: coverage_reports/ubuntu-py3.13
 
       - name: Download coverage artifacts - macOS
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: coverage-macos-latest-py3.9
           path: coverage_reports/macos-py3.9
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-macos-latest-py3.10
           path: coverage_reports/macos-py3.10
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-macos-latest-py3.11
           path: coverage_reports/macos-py3.11
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-macos-latest-py3.12
           path: coverage_reports/macos-py3.12
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-macos-latest-py3.13
           path: coverage_reports/macos-py3.13
 
       - name: Download coverage artifacts - Windows
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: coverage-windows-latest-py3.9
           path: coverage_reports/windows-py3.9
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-windows-latest-py3.10
           path: coverage_reports/windows-py3.10
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-windows-latest-py3.11
           path: coverage_reports/windows-py3.11
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-windows-latest-py3.12
           path: coverage_reports/windows-py3.12
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-windows-latest-py3.13
           path: coverage_reports/windows-py3.13
