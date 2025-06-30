@@ -2,7 +2,8 @@
 
 ![PyPI](https://img.shields.io/pypi/v/mooch.settings?label=mooch.settings)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/mooch.settings)
-<img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/nickstuer/mooch.settings">
+<img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/nickstuer/mooch.settings">[![codecov](https://codecov.io/gh/nickstuer/mooch.settings/branch/main/graph/badge.svg)](https://codecov.io/gh/nickstuer/mooch.settings)
+
 
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![license](https://img.shields.io/github/license/nickstuer/mooch.settings.svg)](LICENSE)
