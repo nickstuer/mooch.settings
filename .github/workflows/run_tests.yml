@@ -28,8 +28,8 @@ jobs:
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
-      - name: Install dependencies
-        run: uv pip install . pytest pytest-cov
+      - name: Install dependencies with uv
+        run: uv pip install --system . pytest pytest-cov
 
       - name: Run tests with coverage
         run: |
