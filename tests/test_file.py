@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 import toml
 
-from mooch.settings.file import CREATED_KEY, NOTICE, UPDATED_KEY, File
+from mooch.settings.filehandler import CREATED_KEY, NOTICE, UPDATED_KEY, FileHandler
 
 
 @pytest.fixture
@@ -17,7 +17,7 @@ def temp_settings_file(tmp_path):
 
 
 def test_create_file_if_not_exists_creates_file_with_metadata(temp_settings_file):
-    file = File(temp_settings_file)
+    file = FileHandler(temp_settings_file)
     assert temp_settings_file.exists()
     data = toml.load(temp_settings_file)
     assert data["metadata"]["notice"] == NOTICE
@@ -26,7 +26,7 @@ def test_create_file_if_not_exists_creates_file_with_metadata(temp_settings_file
 
 
 def test_load_returns_correct_data(temp_settings_file):
-    file = File(temp_settings_file)
+    file = FileHandler(temp_settings_file)
     # Write some data
     data = {"foo": {"bar": 123}}
     file.save(data)
@@ -36,7 +36,7 @@ def test_load_returns_correct_data(temp_settings_file):
 
 
 def test_save_updates_updated_timestamp(temp_settings_file):
-    file = File(temp_settings_file)
+    file = FileHandler(temp_settings_file)
     data = file.load()
     old_updated = data["metadata"]["updated"]
     # Wait a moment to ensure timestamp changes
@@ -49,7 +49,7 @@ def test_save_updates_updated_timestamp(temp_settings_file):
 
 
 def test_save_and_load_roundtrip(temp_settings_file):
-    file = File(temp_settings_file)
+    file = FileHandler(temp_settings_file)
     data = {"alpha": 1, "beta": {"gamma": 2}}
     file.save(data)
     loaded = file.load()
@@ -62,7 +62,7 @@ def test_create_file_if_not_exists_does_not_overwrite_existing(temp_settings_fil
     # Create file manually
     with Path.open(temp_settings_file, "w", encoding="utf-8") as f:
         f.write('[custom]\nkey="value"\n')
-    file = File(temp_settings_file)
+    file = FileHandler(temp_settings_file)
     data = file.load()
     assert "custom" in data
     assert data["custom"]["key"] == "value"

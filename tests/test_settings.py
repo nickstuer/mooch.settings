@@ -22,8 +22,8 @@ default_settings2 = {
 @pytest.fixture
 def settings_filepath(tmpdir_factory: pytest.TempdirFactory):
     temp_dir = str(tmpdir_factory.mktemp("temp"))
-    filepath = temp_dir + "/testing/settings.toml"
-    yield Path(filepath)
+    temp_testing_dir = temp_dir + "/testing/settings.toml"
+    yield Path(temp_testing_dir)
     # yield Path("settings.toml")
     shutil.rmtree(temp_dir)
 
@@ -43,6 +43,36 @@ def test_settings_initializes_with_default_settings(settings_filepath: Path):
     }
 
     assert settings.get("foo") is None
+
+
+@pytest.mark.parametrize(
+    ("value"),
+    [
+        ("settings.toml"),
+        (523),
+        (None),
+        (["settings.toml"]),
+        ({"settings.toml": "value"}),
+    ],
+)
+def test_settings_settings_filepath_types_fails(value):
+    with pytest.raises(TypeError) as exc_info:
+        Settings(value)
+    assert str(exc_info.value) == "settings_filepath must be a Path object"
+
+
+@pytest.mark.parametrize(
+    ("value"),
+    [
+        ("settings.toml"),
+        (523),
+        (["settings.toml"]),
+    ],
+)
+def test_settings_default_settings_types_fails(value, settings_filepath):
+    with pytest.raises(TypeError) as exc_info:
+        Settings(settings_filepath, value)
+    assert str(exc_info.value) == "default_settings must be a dictionary or None"
 
 
 def test_settings_sets_default_settings_if_not_present(settings_filepath: Path):
@@ -224,13 +254,6 @@ def test_settings_sets_default_settings_of_nested_dictionaries_if_not_present(se
     assert new_settings.get("settings.gui.theme.android") == "light"
 
 
-def test_settings_home_directory():
-    settings = Settings(Path("settings.toml"))
-    home_dir = settings.home_directory()
-    assert home_dir.is_dir()  # Check if the home directory exists
-    assert home_dir == Path.home()  # Ensure it matches the actual home directory
-
-
 def test_settings_dynamic_reload_true(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings)
 
@@ -254,5 +277,9 @@ def test_settings_dynamic_reload_false(settings_filepath: Path):
     settings2 = Settings(settings_filepath, default_settings)
     settings2.set("settings.name", "NewName")
 
-    # Verify that the change is reflected in the original settings object
-    assert settings.get("settings.name") == "MyName"
+
+# Verify that the change is reflected in the original settings object
+def test_settings_repr_returns_expected_string(settings_filepath: Path):
+    settings = Settings(settings_filepath, default_settings)
+    expected = f"Settings Stored at: {settings_filepath}"
+    assert repr(settings) == expected

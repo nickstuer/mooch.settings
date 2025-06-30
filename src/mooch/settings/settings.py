@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from mooch.settings.file import File
+from mooch.settings.filehandler import FileHandler
 from mooch.settings.utils import get_nested, set_nested
 
 
@@ -12,23 +12,25 @@ class Settings:
         self,
         settings_filepath: Path,
         default_settings: dict | None = None,
+        *,
+        dynamic_reload: bool = True,
     ) -> None:
-        self._file = File(settings_filepath)
-        self.dynamic_reload = True
+        if not isinstance(settings_filepath, Path):
+            error_message = "settings_filepath must be a Path object"
+            raise TypeError(error_message)
+        if not isinstance(default_settings, dict) and default_settings is not None:
+            error_message = "default_settings must be a dictionary or None"
+            raise TypeError(error_message)
+
+        self._settings_filepath = settings_filepath
+        self._file = FileHandler(self._settings_filepath)
+        self.dynamic_reload = dynamic_reload
 
         self._data = self._file.load()
 
         if default_settings:
             self._set_defaults(default_settings)
             self._file.save(self._data)
-
-    @staticmethod
-    def home_directory() -> Path:
-        """Return the path to the home directory.
-
-        Returns: Path
-        """
-        return Path.home()
 
     def get(self, key: str) -> Any | None:  # noqa: ANN401
         """Return a value from the configuration by key.
@@ -74,3 +76,6 @@ class Settings:
 
             elif isinstance(v, dict):
                 self._set_defaults(v, full_key)
+
+    def __repr__(self) -> str:  # noqa: D105
+        return f"Settings Stored at: {self._settings_filepath}"

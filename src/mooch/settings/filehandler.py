@@ -14,7 +14,7 @@ CREATED_KEY = "metadata.created"
 UPDATED_KEY = "metadata.updated"
 
 
-class File:
+class FileHandler:
     def __init__(self, settings_filepath: Path) -> None:
         self._filepath = settings_filepath
         if not self._filepath.exists():
