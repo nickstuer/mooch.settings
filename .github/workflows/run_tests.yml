@@ -23,22 +23,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install uv and update PATH
-        if: runner.os != 'Windows'
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-        shell: bash
-
-      - name: Install uv on Windows and verify path
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          Invoke-WebRequest -Uri https://astral.sh/uv/install.ps1 -OutFile uv_install.ps1
-          ./uv_install.ps1
-          # Add uv to PATH for next steps:
-          echo "$env:USERPROFILE\.cargo\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          # Verify uv is installed by running the full path:
-          & "$env:USERPROFILE\.cargo\bin\uv.exe" --version
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v6
 
 
       - name: Install dependencies
