@@ -22,7 +22,7 @@ default_settings2 = {
 @pytest.fixture
 def settings_filepath(tmpdir_factory: pytest.TempdirFactory):
     temp_dir = str(tmpdir_factory.mktemp("temp"))
-    filepath = temp_dir + "/settings.toml"
+    filepath = temp_dir + "/testing/settings.toml"
     yield Path(filepath)
     # yield Path("settings.toml")
     shutil.rmtree(temp_dir)
@@ -45,7 +45,7 @@ def test_settings_initializes_with_default_settings(settings_filepath: Path):
     assert settings.get("foo") is None
 
 
-def test_settings_sets_default_settings_if_not_present(settings_filepath: str):
+def test_settings_sets_default_settings_if_not_present(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings)
     assert settings.get("foo") is None
 
@@ -57,7 +57,7 @@ def test_settings_sets_default_settings_if_not_present(settings_filepath: str):
         assert new_settings.get(k) == v
 
 
-def test_settings_get_and_set_methods_success(settings_filepath: str):
+def test_settings_get_and_set_methods_success(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings)
 
     settings.set("string", "string_value")
@@ -93,7 +93,7 @@ def test_settings_get_and_set_methods_success(settings_filepath: str):
     assert settings.get("emoji") == "😊"
 
 
-def test_settings_overrides_existing_settings(settings_filepath: str):
+def test_settings_overrides_existing_settings(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings)
 
     # Set an initial value
@@ -105,14 +105,15 @@ def test_settings_overrides_existing_settings(settings_filepath: str):
     assert settings.get("name") == "NewName"
 
 
-def test_settings_handles_non_existent_keys(settings_filepath: str):
+def test_settings_handles_non_existent_keys(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings)
 
     assert settings.get("non_existent_key") is None
 
 
-def test_settings_handles_empty_settings_file(settings_filepath: str):
+def test_settings_handles_empty_settings_file(settings_filepath: Path):
     # Create an empty settings file
+    settings_filepath.parent.mkdir(parents=True, exist_ok=True)
     with Path.open(settings_filepath, "w") as f:
         f.write("")
     settings = Settings(settings_filepath, default_settings)
@@ -121,7 +122,16 @@ def test_settings_handles_empty_settings_file(settings_filepath: str):
         assert settings.get(k) == v
 
 
-def test_settings_saves_settings_to_file(settings_filepath: str):
+def test_settings_handles_creating_directories_for_new_files(settings_filepath: Path):
+    parent_dir = settings_filepath.parent
+
+    assert not parent_dir.exists(), "Parent directory should not exist before test"
+
+    settings = Settings(settings_filepath, default_settings)
+    assert parent_dir.exists(), "Parent directory should be created by Settings class"
+
+
+def test_settings_saves_settings_to_file(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings)
 
     # Set some values
@@ -134,7 +144,7 @@ def test_settings_saves_settings_to_file(settings_filepath: str):
     assert new_settings.get("mood") == "TestMood"
 
 
-def test_settings_no_default_settings(settings_filepath: str):
+def test_settings_no_default_settings(settings_filepath: Path):
     # Test with no default settings
     settings = Settings(settings_filepath)
 
@@ -151,7 +161,7 @@ def test_settings_no_default_settings(settings_filepath: str):
     assert new_settings.get("name") == "NoDefaultName"
 
 
-def test_settings_with_getitem_and_setitem(settings_filepath: str):
+def test_settings_with_getitem_and_setitem(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings)
 
     # Test __getitem__
@@ -167,7 +177,7 @@ def test_settings_with_getitem_and_setitem(settings_filepath: str):
     assert settings["new_key"] == "new_value"
 
 
-def test_settings_updates_defaults_with_nested_dict(settings_filepath: str):
+def test_settings_updates_defaults_with_nested_dict(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings)
     assert settings.get("dictionary.subdictionary.key3") is None
     assert settings["dictionary.subdictionary.key3"] is None
@@ -180,7 +190,7 @@ def test_settings_updates_defaults_with_nested_dict(settings_filepath: str):
     assert new_settings["dictionary"]["subdictionary"]["key3"] == "subvalue3"
 
 
-def test_settings_initializes_defaults_with_nested_dict(settings_filepath: str):
+def test_settings_initializes_defaults_with_nested_dict(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings2)
     assert settings.get("settings.name") == "MyName"
     assert settings.get("settings.mood") == "MyMood"
@@ -197,7 +207,7 @@ def test_settings_initializes_defaults_with_nested_dict(settings_filepath: str):
     assert settings.get("settings") == {"gui": {"theme": {"ios": "dark"}}, "mood": "MyMood", "name": "MyName"}
 
 
-def test_settings_sets_default_settings_of_nested_dictionaries_if_not_present(settings_filepath: str):
+def test_settings_sets_default_settings_of_nested_dictionaries_if_not_present(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings2)
     assert settings.get("settings.gui.theme.ios") == "dark"
     assert settings.get("settings.gui.theme.android") is None
@@ -221,7 +231,7 @@ def test_settings_home_directory():
     assert home_dir == Path.home()  # Ensure it matches the actual home directory
 
 
-def test_settings_dynamic_reload_true(settings_filepath: str):
+def test_settings_dynamic_reload_true(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings)
 
     assert settings.get("settings.name") == "MyName"
@@ -234,7 +244,7 @@ def test_settings_dynamic_reload_true(settings_filepath: str):
     assert settings.get("settings.name") == "NewName"
 
 
-def test_settings_dynamic_reload_false(settings_filepath: str):
+def test_settings_dynamic_reload_false(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings)
     settings.dynamic_reload = False
 
