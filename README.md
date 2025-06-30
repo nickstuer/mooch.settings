@@ -4,7 +4,7 @@
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/mooch.settings)
 <img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/nickstuer/mooch.settings">
 
-![Python Versions](https://img.shields.io/badge/python-3.9%20|%203.10%20|%203.11%20|%203.12-blue?logo=python)
+![Python Versions](https://img.shields.io/badge/python-3.9%20|%203.10%20|%203.11%20|%203.12|%203.13-blue?logo=python)
 ![Codecov](https://img.shields.io/codecov/c/github/nickstuer/mooch.settings)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/nickstuer/mooch.settings/run_tests.yml)
 
