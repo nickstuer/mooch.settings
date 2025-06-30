@@ -23,17 +23,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
-
-      - name: Add uv to PATH (Windows)
-        if: runner.os == 'Windows'
-        run: echo "$env:USERPROFILE\\.cargo\\bin" >> $env:GITHUB_PATH
-        shell: pwsh
-
-      - name: Add uv to PATH (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      - name: Install uv and update PATH
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            echo "$env:USERPROFILE\\.cargo\\bin" >> $env:GITHUB_PATH
+          else
+            echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          fi
         shell: bash
 
 
@@ -80,6 +77,10 @@ jobs:
         with:
           name: coverage-ubuntu-latest-py3.12
           path: coverage_reports/ubuntu-py3.12
+      - uses: actions/download-artifact@v3
+        with:
+          name: coverage-ubuntu-latest-py3.13
+          path: coverage_reports/ubuntu-py3.13
 
       - name: Download coverage artifacts - macOS
         uses: actions/download-artifact@v3
@@ -98,6 +99,10 @@ jobs:
         with:
           name: coverage-macos-latest-py3.12
           path: coverage_reports/macos-py3.12
+      - uses: actions/download-artifact@v3
+        with:
+          name: coverage-macos-latest-py3.13
+          path: coverage_reports/macos-py3.13
 
       - name: Download coverage artifacts - Windows
         uses: actions/download-artifact@v3
@@ -116,6 +121,10 @@ jobs:
         with:
           name: coverage-windows-latest-py3.12
           path: coverage_reports/windows-py3.12
+      - uses: actions/download-artifact@v3
+        with:
+          name: coverage-windows-latest-py3.13
+          path: coverage_reports/windows-py3.13
 
       - name: Combine coverage reports
         run: |
