@@ -6,7 +6,7 @@
 
 ![Python Versions](https://img.shields.io/badge/python-3.9%20|%203.10%20|%203.11%20|%203.12-blue?logo=python)
 ![Codecov](https://img.shields.io/codecov/c/github/nickstuer/mooch.settings)
-https://img.shields.io/github/actions/workflow/status/nickstuer/mooch.settings/run_tests.yml
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/nickstuer/mooch.settings/run_tests.yml)
 
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![license](https://img.shields.io/github/license/nickstuer/mooch.settings.svg)](LICENSE)
