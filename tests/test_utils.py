@@ -1,9 +1,19 @@
+import shutil
 import time
 from pathlib import Path
 
 import pytest
 
 from mooch.settings.utils import get_nested, has_file_changed, is_valid_key, set_nested
+
+
+@pytest.fixture
+def temp_filepath(tmpdir_factory: pytest.TempdirFactory):
+    temp_dir = str(tmpdir_factory.mktemp("temp"))
+    temp_testing_dir = Path(temp_dir) / "testing"
+    temp_testing_dir.mkdir(parents=True, exist_ok=True)
+    yield Path(temp_testing_dir)
+    shutil.rmtree(temp_dir)
 
 
 @pytest.mark.parametrize(
@@ -110,16 +120,16 @@ def test_get_nested_returns_none_for_non_dict():
     assert get_nested(d, "a.b") is None
 
 
-def test_has_file_changed_returns_true_when_no_last_modified_time(tmp_path):
-    file = tmp_path / "testfile.txt"
+def test_has_file_changed_returns_true_when_no_last_modified_time(temp_filepath):
+    file = temp_filepath / "testfile.txt"
     file.write_text("hello")
     file_changed, modified_time = has_file_changed(file, None)
     assert file_changed is True
     assert modified_time == file.stat().st_mtime
 
 
-def test_has_file_changed_returns_false_when_file_not_changed(tmp_path):
-    file = tmp_path / "testfile.txt"
+def test_has_file_changed_returns_false_when_file_not_changed(temp_filepath):
+    file = temp_filepath / "testfile.txt"
     file.write_text("hello")
     mtime = file.stat().st_mtime
     file_changed, modified_time = has_file_changed(file, mtime)
@@ -127,8 +137,8 @@ def test_has_file_changed_returns_false_when_file_not_changed(tmp_path):
     assert modified_time == mtime
 
 
-def test_has_file_changed_returns_true_when_file_changed(tmp_path):
-    file = tmp_path / "testfile.txt"
+def test_has_file_changed_returns_true_when_file_changed(temp_filepath):
+    file = temp_filepath / "testfile.txt"
     file.write_text("hello")
     mtime = file.stat().st_mtime
     time.sleep(0.01)  # Ensure mtime changes
@@ -138,8 +148,8 @@ def test_has_file_changed_returns_true_when_file_changed(tmp_path):
     assert modified_time == file.stat().st_mtime
 
 
-def test_has_file_changed_with_path_object(tmp_path):
-    file = tmp_path / "afile.txt"
+def test_has_file_changed_with_path_object(temp_filepath):
+    file = temp_filepath / "afile.txt"
     file.write_text("abc")
     mtime = Path(file).stat().st_mtime
     file_changed, modified_time = has_file_changed(file, mtime)
