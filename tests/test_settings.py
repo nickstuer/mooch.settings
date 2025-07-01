@@ -174,6 +174,27 @@ def test_settings_saves_settings_to_file(settings_filepath: Path):
     assert new_settings.get("mood") == "TestMood"
 
 
+def test_settings_adds_metadata_after_init_with_default_settings(settings_filepath: Path):
+    settings = Settings(settings_filepath, default_settings)
+
+    # Check if metadata is added
+    assert settings["metadata.notice"] is not None
+    assert settings.get("metadata.notice") is not None
+    assert settings["metadata.created"] is not None
+    assert settings["metadata.updated"] is not None
+    assert settings["metadata.NotReal"] is None
+
+
+def test_settings_adds_metadata_after_init_without_default_settings(settings_filepath: Path):
+    settings = Settings(settings_filepath)
+
+    # Check if metadata is added
+    assert settings["metadata.notice"] is not None
+    assert settings["metadata.created"] is not None
+    assert settings["metadata.updated"] is not None
+    assert settings["metadata.NotReal"] is None
+
+
 def test_settings_no_default_settings(settings_filepath: Path):
     # Test with no default settings
     settings = Settings(settings_filepath)
