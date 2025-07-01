@@ -29,6 +29,19 @@ def settings_filepath(tmpdir_factory: pytest.TempdirFactory):
     shutil.rmtree(temp_dir)
 
 
+def test_settings_initializes_with_empty_file(settings_filepath: Path):
+    settings = Settings(settings_filepath)
+    assert settings.get("settings.name") is None
+    assert settings.get("settings.mood") is None
+    assert settings.get("dictionary.key1") is None
+    assert settings.get("dictionary") is None
+
+    # Check if metadata keys are present
+    assert settings.get("metadata.notice") is not None
+    assert settings.get("metadata.created") is not None
+    assert settings.get("metadata.updated") is not None
+
+
 def test_settings_initializes_with_default_settings(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings)
     for k, v in default_settings.items():
@@ -327,6 +340,41 @@ def test_settings_dynamic_reload_false(settings_filepath: Path):
     time.sleep(0.01)  # Ensure mtime changes
     settings2 = Settings(settings_filepath, default_settings)
     settings2.set("settings.name", "NewName")
+
+
+def test_settings_dynamic_reload_true_set(settings_filepath: Path):
+    settings = Settings(settings_filepath, default_settings)
+
+    assert settings.get("settings.name") == "MyName"
+
+    # Change the settings file seperatrely
+    time.sleep(0.01)  # Ensure mtime changes
+    settings2 = Settings(settings_filepath, default_settings)
+    settings2.set("settings.name", "NewName3")
+
+    # Verify that the change is reflected in the original settings object
+    settings2.set("settings.mood", "MyMood")
+    assert settings.get("settings.name") == "NewName3"
+
+
+def test_settings_dynamic_reload_false_set(settings_filepath: Path):
+    settings = Settings(settings_filepath, default_settings)
+    settings.dynamic_reload = False
+    settings.dynamic_reload = False
+
+    assert settings.get("settings.name") == "MyName"
+
+    # Change the settings file seperatrely
+    time.sleep(0.01)  # Ensure mtime changes
+    settings2 = Settings(settings_filepath, default_settings)
+    settings2.set("settings.name", "NewName3")
+
+    # Verify that the change is reflected in the original settings object
+    settings2.set("settings.mood", "MyMood")
+    assert settings.get("settings.name") == "MyName"
+
+    settings.set("settings.name", "NewName4")
+    assert settings.get("settings.name") == "NewName4"
 
 
 def test_settings_read_only_true(settings_filepath: Path):
