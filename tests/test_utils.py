@@ -122,7 +122,8 @@ def test_get_nested_returns_none_for_non_dict():
 
 def test_has_file_changed_returns_true_when_no_last_modified_time(temp_filepath):
     file = temp_filepath / "testfile.txt"
-    file.write_text("hello")
+    with Path.open(file, "w") as f:
+        f.write("hello")
     file_changed, modified_time = has_file_changed(file, None)
     assert file_changed is True
     assert modified_time == file.stat().st_mtime
@@ -130,7 +131,8 @@ def test_has_file_changed_returns_true_when_no_last_modified_time(temp_filepath)
 
 def test_has_file_changed_returns_false_when_file_not_changed(temp_filepath):
     file = temp_filepath / "testfile.txt"
-    file.write_text("hello")
+    with Path.open(file, "w") as f:
+        f.write("hello")
     mtime = file.stat().st_mtime
     file_changed, modified_time = has_file_changed(file, mtime)
     assert file_changed is False
@@ -139,10 +141,12 @@ def test_has_file_changed_returns_false_when_file_not_changed(temp_filepath):
 
 def test_has_file_changed_returns_true_when_file_changed(temp_filepath):
     file = temp_filepath / "testfile.txt"
-    file.write_text("hello")
+    with Path.open(file, "w") as f:
+        f.write("hello")
     mtime = file.stat().st_mtime
     time.sleep(0.01)  # Ensure mtime changes
-    file.write_text("world")
+    with Path.open(file, "w") as f:
+        f.write("world")
     file_changed, modified_time = has_file_changed(file, mtime)
     assert file_changed is True
     assert modified_time == file.stat().st_mtime
@@ -150,10 +154,13 @@ def test_has_file_changed_returns_true_when_file_changed(temp_filepath):
 
 def test_has_file_changed_with_path_object(temp_filepath):
     file = temp_filepath / "afile.txt"
-    file.write_text("abc")
+    with Path.open(file, "w") as f:
+        f.write("abc")
     mtime = Path(file).stat().st_mtime
+    time.sleep(0.01)  # Ensure mtime changes
     file_changed, modified_time = has_file_changed(file, mtime)
     assert file_changed is False
-    file.write_text("def")
+    with Path.open(file, "w") as f:
+        f.write("def")
     file_changed, modified_time = has_file_changed(file, mtime)
     assert file_changed is True
