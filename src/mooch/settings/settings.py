@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any
 
 from mooch.settings.filehandler import FileHandler
-from mooch.settings.utils import get_nested, set_nested
+from mooch.settings.utils import get_nested, has_file_changed, set_nested
 
 
 class Settings:
@@ -31,6 +31,7 @@ class Settings:
 
         self._settings_filepath = settings_filepath
         self._file = FileHandler(self._settings_filepath)
+        self._last_modified_time = None
         self.dynamic_reload = dynamic_reload
         self.read_only = read_only
 
@@ -50,7 +51,9 @@ class Settings:
         Any | None: The value associated with the key, or None if the key does not exist.
 
         """
-        if self.dynamic_reload:
+        file_has_changed, modified_time = has_file_changed(self._settings_filepath, self._last_modified_time)
+        self._last_modified_time = modified_time
+        if self.dynamic_reload and file_has_changed:
             self._data = self._file.load()
         return get_nested(self._data, key)
 
@@ -68,6 +71,12 @@ class Settings:
         if self.read_only:
             error_message = "Settings are read-only and cannot be modified."
             raise PermissionError(error_message)
+
+        file_has_changed, modified_time = has_file_changed(self._settings_filepath, self._last_modified_time)
+        self._last_modified_time = modified_time
+        if self.dynamic_reload and file_has_changed:
+            self._data = self._file.load()
+
         set_nested(self._data, key, value)
         self._file.save(self._data)
 

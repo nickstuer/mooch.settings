@@ -1,6 +1,9 @@
+import time
+from pathlib import Path
+
 import pytest
 
-from mooch.settings.utils import get_nested, is_valid_key, set_nested
+from mooch.settings.utils import get_nested, has_file_changed, is_valid_key, set_nested
 
 
 @pytest.mark.parametrize(
@@ -105,3 +108,42 @@ def test_set_nested_overwrites_non_dict():
 def test_get_nested_returns_none_for_non_dict():
     d = {"a": 1}
     assert get_nested(d, "a.b") is None
+
+
+def test_has_file_changed_returns_true_when_no_last_modified_time(tmp_path):
+    file = tmp_path / "testfile.txt"
+    file.write_text("hello")
+    file_changed, modified_time = has_file_changed(file, None)
+    assert file_changed is True
+    assert modified_time == file.stat().st_mtime
+
+
+def test_has_file_changed_returns_false_when_file_not_changed(tmp_path):
+    file = tmp_path / "testfile.txt"
+    file.write_text("hello")
+    mtime = file.stat().st_mtime
+    file_changed, modified_time = has_file_changed(file, mtime)
+    assert file_changed is False
+    assert modified_time == mtime
+
+
+def test_has_file_changed_returns_true_when_file_changed(tmp_path):
+    file = tmp_path / "testfile.txt"
+    file.write_text("hello")
+    mtime = file.stat().st_mtime
+    time.sleep(0.01)  # Ensure mtime changes
+    file.write_text("world")
+    file_changed, modified_time = has_file_changed(file, mtime)
+    assert file_changed is True
+    assert modified_time == file.stat().st_mtime
+
+
+def test_has_file_changed_with_path_object(tmp_path):
+    file = tmp_path / "afile.txt"
+    file.write_text("abc")
+    mtime = Path(file).stat().st_mtime
+    file_changed, modified_time = has_file_changed(file, mtime)
+    assert file_changed is False
+    file.write_text("def")
+    file_changed, modified_time = has_file_changed(file, mtime)
+    assert file_changed is True
