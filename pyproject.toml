@@ -1,6 +1,6 @@
 [project]
 name = "mooch.settings"
-version = "0.0.1dev4"
+version = "1.0.0"
 authors = [
   { name="Nick Stuer", email="nickstuer@duck.com" },
 ]
@@ -10,8 +10,12 @@ requires-python = ">=3.9"
 dependencies = [
     "toml>=0.10.2",
 ]
+# How mature is this project? Common values are
+  #   3 - Alpha
+  #   4 - Beta
+  #   5 - Production/Stable
 classifiers = [
-    "Development Status :: 2 - Pre-Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
