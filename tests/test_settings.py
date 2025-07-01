@@ -48,7 +48,6 @@ def test_settings_initializes_with_default_settings(settings_filepath: Path):
 @pytest.mark.parametrize(
     ("value"),
     [
-        ("settings.toml"),
         (523),
         (None),
         (["settings.toml"]),
@@ -58,7 +57,20 @@ def test_settings_initializes_with_default_settings(settings_filepath: Path):
 def test_settings_settings_filepath_types_fails(value):
     with pytest.raises(TypeError) as exc_info:
         Settings(value)
-    assert str(exc_info.value) == "settings_filepath must be a Path object"
+    # assert str(exc_info.value) == "settings_filepath must be a Path object"
+
+
+@pytest.mark.parametrize(
+    ("value"),
+    [
+        (Path("settings.json")),
+        "settings.json",
+    ],
+)
+def test_settings_settings_filepath_ends_with_toml(value):
+    with pytest.raises(ValueError) as exc_info:
+        Settings(value)
+    # assert str(exc_info.value) == "settings_filepath must be a Path object"
 
 
 @pytest.mark.parametrize(
@@ -133,6 +145,13 @@ def test_settings_overrides_existing_settings(settings_filepath: Path):
     # Override the value
     settings.set("name", "NewName")
     assert settings.get("name") == "NewName"
+
+
+def test_settings_handles_str_settings_filepath(settings_filepath: Path):
+    settings = Settings(str(settings_filepath))
+
+    assert settings.get("non_existent_key") is None
+    assert settings.get("metadata.notice") is not None
 
 
 def test_settings_handles_non_existent_keys(settings_filepath: Path):

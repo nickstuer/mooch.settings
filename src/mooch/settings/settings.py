@@ -10,17 +10,23 @@ from mooch.settings.utils import get_nested, set_nested
 class Settings:
     def __init__(
         self,
-        settings_filepath: Path,
+        settings_filepath: Path | str,
         default_settings: dict | None = None,
         *,
         dynamic_reload: bool = True,
     ) -> None:
-        if not isinstance(settings_filepath, Path):
-            error_message = "settings_filepath must be a Path object"
+        if not isinstance(settings_filepath, (Path, str)):
+            error_message = "settings_filepath must be a Path object or a string"
             raise TypeError(error_message)
         if not isinstance(default_settings, dict) and default_settings is not None:
             error_message = "default_settings must be a dictionary or None"
             raise TypeError(error_message)
+        if not str(settings_filepath).endswith(".toml"):
+            error_message = "settings_filepath must end with .toml"
+            raise ValueError(error_message)
+
+        if isinstance(settings_filepath, str):
+            settings_filepath = Path(settings_filepath)
 
         self._settings_filepath = settings_filepath
         self._file = FileHandler(self._settings_filepath)
