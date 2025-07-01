@@ -326,6 +326,14 @@ def test_settings_dynamic_reload_false(settings_filepath: Path):
     settings2.set("settings.name", "NewName")
 
 
+def test_settings_read_only_true(settings_filepath: Path):
+    settings = Settings(settings_filepath, default_settings, read_only=True)
+
+    assert settings.read_only is True
+    with pytest.raises(PermissionError):
+        settings.set("settings.name", "NewName")
+
+
 # Verify that the change is reflected in the original settings object
 def test_settings_repr_returns_expected_string(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings)

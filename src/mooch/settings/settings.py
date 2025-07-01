@@ -14,6 +14,7 @@ class Settings:
         default_settings: dict | None = None,
         *,
         dynamic_reload: bool = True,
+        read_only: bool = False,
     ) -> None:
         if not isinstance(settings_filepath, (Path, str)):
             error_message = "settings_filepath must be a Path object or a string"
@@ -31,10 +32,11 @@ class Settings:
         self._settings_filepath = settings_filepath
         self._file = FileHandler(self._settings_filepath)
         self.dynamic_reload = dynamic_reload
+        self.read_only = read_only
 
         self._data = self._file.load()
 
-        if default_settings:
+        if default_settings and not self.read_only:
             self._set_defaults(default_settings)
             self._file.save(self._data)
 
@@ -63,6 +65,9 @@ class Settings:
         None
 
         """
+        if self.read_only:
+            error_message = "Settings are read-only and cannot be modified."
+            raise PermissionError(error_message)
         set_nested(self._data, key, value)
         self._file.save(self._data)
 
