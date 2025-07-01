@@ -1,4 +1,5 @@
 import shutil
+import time
 from pathlib import Path
 
 import pytest
@@ -308,6 +309,7 @@ def test_settings_dynamic_reload_true(settings_filepath: Path):
     assert settings.get("settings.name") == "MyName"
 
     # Change the settings file seperatrely
+    time.sleep(0.01)  # Ensure mtime changes
     settings2 = Settings(settings_filepath, default_settings)
     settings2.set("settings.name", "NewName")
 
@@ -322,6 +324,7 @@ def test_settings_dynamic_reload_false(settings_filepath: Path):
     assert settings.get("settings.name") == "MyName"
 
     # Change the settings file seperatrely
+    time.sleep(0.01)  # Ensure mtime changes
     settings2 = Settings(settings_filepath, default_settings)
     settings2.set("settings.name", "NewName")
 
