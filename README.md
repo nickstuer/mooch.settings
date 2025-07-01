@@ -23,9 +23,14 @@ This Python package is a collection of useful Python code that is commonly used 
 
 ## 📖 Features
 
-
-### Settings File
-Uses a TOML settings file. Easily get/set settings values. Automatically sets values to defaults if they're not currently saved in the setting file.
+ - Uses TOML (Tom's Obvious, Minimal Language) at it's core.
+ - - Becoming very popular.
+ - - Easier to read than json/xml/ini files.
+ - Easily get/set settings values by treating the Settings object as a dictionary.
+ - - Example: print(settings["settings.mood"])
+ - Automatically sets values to defaults if they're not currently saved in the setting file.
+ - - This is helpful when adding additional settings without having to manually edit the settings file directly everytime you add a new setting.
+ - Nested dictionary support allowing you to access settings from the entire TOML setting file with ease.
 
 
 ## 🛠 Install
