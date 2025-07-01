@@ -1,6 +1,56 @@
 import pytest
 
-from mooch.settings.utils import get_nested, set_nested
+from mooch.settings.utils import get_nested, is_valid_key, set_nested
+
+
+@pytest.mark.parametrize(
+    ("key", "expected"),
+    [
+        ("DEBUG", True),
+        ("debug-mode", True),
+        ("db.host", False),
+        ('"db.host"', False),
+        ("db host", False),
+        ("'db host'", False),
+        ('"bad"key"', False),
+        ("'bad'key'", False),
+        ("simple_key", True),
+        ("123key", True),
+        ("key-with-dash", True),
+        ("key with space", False),
+        ('"key with space in nested quotes"', False),
+        ('"key with \n newline"', False),
+        ("'single'quote'", False),
+        ("'valid key'", False),
+        ('"valid key"', False),
+        ('""', False),
+        ("", False),
+    ],
+)
+def test_is_valid_key(key, expected):
+    assert is_valid_key(key) == expected
+
+
+def test_get_nested_invalid_key():
+    d = {"a": {"b": {"c": 1}}}
+    with pytest.raises(ValueError):  # noqa: PT011
+        get_nested(d, "a.b ")
+    with pytest.raises(ValueError):  # noqa: PT011
+        get_nested(d, "b ")
+    with pytest.raises(ValueError):  # noqa: PT011
+        get_nested(d, "b .c.d.a")
+
+
+def test_set_nested_invalid_key():
+    d = {"a": {"b": {"c": 1}}}
+    with pytest.raises(ValueError):
+        set_nested(d, "a.b .c", 2)
+    with pytest.raises(ValueError):
+        set_nested(d, "b ", 2)
+    with pytest.raises(ValueError):
+        set_nested(d, "b .c.d.a", 2)
+    with pytest.raises(ValueError):
+        set_nested(d, "a.b.c ", 2)
 
 
 @pytest.mark.parametrize(

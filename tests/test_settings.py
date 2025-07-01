@@ -174,6 +174,14 @@ def test_settings_saves_settings_to_file(settings_filepath: Path):
     assert new_settings.get("mood") == "TestMood"
 
 
+def test_settings_with_different_cases_in_key(settings_filepath: Path):
+    settings = Settings(settings_filepath, default_settings)
+    settings["caseCheck"] = "value"
+
+    assert settings["caseCheck"] == "value"
+    assert settings["casecheck"] is None
+
+
 def test_settings_adds_metadata_after_init_with_default_settings(settings_filepath: Path):
     settings = Settings(settings_filepath, default_settings)
 
