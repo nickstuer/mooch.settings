@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-from pathlib import Path
 from typing import Any
 
 
@@ -52,9 +51,3 @@ def get_nested(d: dict, key: str, sep: str = ".") -> Any | None:  # noqa: ANN401
         else:
             return None
     return d
-
-
-def has_file_changed(filepath: Path, last_modified_time: float | None = None) -> tuple[bool, float]:
-    current_modified_time = Path(filepath).stat().st_mtime
-
-    return last_modified_time is None or current_modified_time != last_modified_time, current_modified_time

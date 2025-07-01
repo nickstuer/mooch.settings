@@ -1,43 +1,44 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 import toml
 
-from mooch.settings.utils import set_nested
-
-NOTICE_KEY = "metadata.notice"
-NOTICE = "This file was created by mooch.settings."
-CREATED_KEY = "metadata.created"
-UPDATED_KEY = "metadata.updated"
-
 
 class FileHandler:
-    def __init__(self, settings_filepath: Path) -> None:
-        self._filepath = settings_filepath
-        if not self._filepath.exists():
-            self.create_file_and_directories()
+    def __init__(self, filepath: Path) -> None:
+        self._filepath = filepath
+        self._ensure_dir()
+        self._last_modified_time = None
 
-    def create_file_and_directories(self) -> None:
-        """Create the settings file and directories."""
-        # Ensure the parent directory exists
-        self._filepath.parent.mkdir(parents=True, exist_ok=True)
-        data = {}
-        set_nested(data, NOTICE_KEY, NOTICE)
-        set_nested(data, CREATED_KEY, datetime.now(tz=timezone.utc).isoformat())
-        set_nested(data, UPDATED_KEY, datetime.now(tz=timezone.utc).isoformat())
+    def source_exists(self) -> bool:
+        """Check if the file exists."""
+        return self._filepath.exists()
 
-        self.save(data)
+    def source_is_modified(self) -> bool:
+        """Check if the source file has been modified since the last check."""
+        last_modified_time = self._last_modified_time
+        current_modified_time = self._get_modified_time()
+
+        return last_modified_time is None or current_modified_time != last_modified_time, current_modified_time
 
     def load(self) -> dict[str, Any]:
         """Load the settings from the file."""
+        self._last_modified_time = self._get_modified_time()
         with Path.open(self._filepath, mode="r", encoding="utf-8") as f:
             return toml.load(f)
 
     def save(self, data: dict) -> None:
         """Save the settings to the file and update the updated timestamp."""
-        set_nested(data, UPDATED_KEY, datetime.now(tz=timezone.utc).isoformat())
         with Path.open(self._filepath, mode="w", encoding="utf-8") as f:
             toml.dump(data, f)
+        self._last_modified_time = self._get_modified_time()
+
+    def _get_modified_time(self) -> float:
+        """Get the last modified time of the file."""
+        return self._filepath.stat().st_mtime
+
+    def _ensure_dir(self) -> None:
+        """Ensure the directory for the file path exists."""
+        self._filepath.parent.mkdir(parents=True, exist_ok=True)

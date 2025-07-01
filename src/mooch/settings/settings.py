@@ -1,10 +1,16 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from mooch.settings.filehandler import FileHandler
-from mooch.settings.utils import get_nested, has_file_changed, set_nested
+from mooch.settings.utils import get_nested, set_nested
+
+NOTICE_KEY = "metadata.notice"
+NOTICE = "This file was created by mooch.settings."
+CREATED_KEY = "metadata.created"
+UPDATED_KEY = "metadata.updated"
 
 
 class Settings:
@@ -35,11 +41,23 @@ class Settings:
         self.dynamic_reload = dynamic_reload
         self.read_only = read_only
 
-        self._data = self._file.load()
+        self._initialize_source()
+        self._load()
 
         if default_settings and not self.read_only:
             self._set_defaults(default_settings)
-            self._file.save(self._data)
+            self._save()
+
+    def _initialize_source(self) -> None:
+        """Initialize the settings file with metadata values."""
+        if self._file.source_exists():
+            return
+        data = {}
+        set_nested(data, NOTICE_KEY, NOTICE)
+        set_nested(data, CREATED_KEY, datetime.now(tz=timezone.utc).isoformat())
+        set_nested(data, UPDATED_KEY, datetime.now(tz=timezone.utc).isoformat())
+
+        self._file.save(data)
 
     def get(self, key: str) -> Any | None:  # noqa: ANN401
         """Return a value from the configuration by key.
@@ -51,9 +69,7 @@ class Settings:
         Any | None: The value associated with the key, or None if the key does not exist.
 
         """
-        file_has_changed, modified_time = has_file_changed(self._settings_filepath, self._last_modified_time)
-        self._last_modified_time = modified_time
-        if self.dynamic_reload and file_has_changed:
+        if self.dynamic_reload and self._file.source_is_modified():
             self._data = self._file.load()
         return get_nested(self._data, key)
 
@@ -72,9 +88,7 @@ class Settings:
             error_message = "Settings are read-only and cannot be modified."
             raise PermissionError(error_message)
 
-        file_has_changed, modified_time = has_file_changed(self._settings_filepath, self._last_modified_time)
-        self._last_modified_time = modified_time
-        if self.dynamic_reload and file_has_changed:
+        if self.dynamic_reload and self._file.source_is_modified():
             self._data = self._file.load()
 
         set_nested(self._data, key, value)
@@ -93,9 +107,16 @@ class Settings:
             full_key = f"{parent_key}.{k}" if parent_key else k
             if self.get(full_key) is None:
                 self.set(full_key, v)
-
             elif isinstance(v, dict):
                 self._set_defaults(v, full_key)
+
+    def _load(self) -> None:
+        """Reload the settings from the file."""
+        self._data = self._file.load()
+
+    def _save(self) -> None:
+        """Save the settings to the file."""
+        self._file.save(self._data)
 
     def __repr__(self) -> str:  # noqa: D105
         return f"Settings Stored at: {self._settings_filepath}"
