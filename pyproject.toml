@@ -1,6 +1,6 @@
 [project]
 name = "mooch.settings"
-version = "0.0.1dev3"
+version = "0.0.1dev4"
 authors = [
   { name="Nick Stuer", email="nickstuer@duck.com" },
 ]
