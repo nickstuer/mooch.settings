@@ -11,7 +11,9 @@
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![license](https://img.shields.io/github/license/nickstuer/mooch.settings.svg)](LICENSE)
 
-This Python package is a collection of useful Python code that is commonly used on all types of Python projects.
+A lightweight, TOML-backed configuration/settings utility that feels like a dictionary.
+
+mooch.settings is a Python configuration library designed for simplicity and developer ergonomics. It loads settings data from TOML files and exposes them as standard Python dictionaries — allowing you to work with settings in a familiar, Python way.
 
 ## Table of Contents
 
@@ -23,14 +25,11 @@ This Python package is a collection of useful Python code that is commonly used 
 
 ## 📖 Features
 
- - Uses TOML (Tom's Obvious, Minimal Language) at it's core.
- - - Becoming very popular.
- - - Easier to read than json/xml/ini files.
- - Easily get/set settings values by treating the Settings object as a dictionary.
- - - Example: print(settings["settings.mood"])
- - Automatically sets values to defaults if they're not currently saved in the setting file.
- - - This is helpful when adding additional settings without having to manually edit the settings file directly everytime you add a new setting.
- - Nested dictionary support allowing you to access settings from the entire TOML setting file with ease.
+ - TOML-powered: Uses toml under the hood for modern, human-friendly config files.
+ - Dictionary-like interface: Access and manipulate settings with regular dict operations.
+ - Nested access: Supports nested structures and dotted key notation.
+ - Safe defaults: Easily provide fallback values or defaults when keys are missing from the config file.
+ - Optional dynamic reload: Reloads config file everytime a key is read. (Enabled by default)
 
 
 ## 🛠 Install
