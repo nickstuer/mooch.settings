@@ -44,17 +44,20 @@ Python 3.9 or greater
 
 ## 🎮 Usage
 
-### settings File
+### Example
+This will create/use a 'settings.toml' file located in the .mooch directory of the user's home directory.
 ```python
 from mooch.settings import Settings
+from pathlib import Path
+
 default_settings = {
     "settings": {
-        "name": "MyName,
+        "name": "MyName",
         "mood": "happy",
     },
 }
 
-settings = Settings("settings.toml", default_settings)
+settings = Settings(Path.home() / ".mooch/settings.toml", default_settings)
 
 print(settings["settings.mood"])
 settings["settings.mood"] = "angry"
