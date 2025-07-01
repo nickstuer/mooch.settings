@@ -1,0 +1,47 @@
+name: "Publish"
+
+on:
+  release:
+    types: ["published"]
+
+jobs:
+  run:
+    name: "Build and publish release"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Extract version from pyproject.toml
+        id: get-version
+        run: |
+            FILE_VERSION=$(sed -nE 's/^version\s*=\s*"(.*)"/\1/p' pyproject.toml)
+            echo "file_version=$FILE_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Verify release tag matches pyproject.toml version
+        run: |
+            TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+            FILE_VERSION="${{ steps.get-version.outputs.file_version }}"
+
+            echo "Release tag version: $TAG_VERSION"
+            echo "pyproject.toml version: $FILE_VERSION"
+
+            if [ "$TAG_VERSION" != "$FILE_VERSION" ]; then
+            echo "❌ Version mismatch! Tag version is $TAG_VERSION but pyproject.toml has $FILE_VERSION"
+            exit 1
+            fi
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Build
+        run: uv build
+
+      - name: Publish
+        run: uv publish -t ${{ secrets.PYPI_TOKEN }}
