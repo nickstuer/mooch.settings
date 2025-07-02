@@ -5,7 +5,6 @@ __pycache__
 build/
 dist/
 *.coverage
-.vscode/
 .pytest_cache/
 logs/
 *.egg-info/
