@@ -25,11 +25,11 @@ mooch.settings is a Python configuration library designed for simplicity and dev
 
 ## 📖 Features
 
- - TOML-powered: Uses toml under the hood for modern, human-friendly config files.
+ - TOML-powered: Uses toml under the hood for modern, human-friendly settings files.
  - Dictionary-like interface: Access and manipulate settings with regular dict operations.
  - Nested access: Supports nested structures and dotted key notation.
- - Safe defaults: Easily provide fallback values or defaults when keys are missing from the config file.
- - Optional dynamic reload: Reloads config file everytime a key is read. (Enabled by default)
+ - Safe defaults: Easily provide fallback values or defaults when keys are missing from the setting file.
+ - Optional always reload: Reloads setting file everytime a key is read. (Enabled by default)
 
 
 ## 🛠 Install
@@ -49,19 +49,18 @@ Python 3.9 or greater
 ## 🎮 Usage
 
 ### Example
-This will create/use a 'settings.toml' file located in the .mooch directory of the user's home directory.
+This will create/use a 'settings.toml' file located in the '.mooch' directory of the user's home directory.
 ```python
 from mooch.settings import Settings
-from pathlib import Path
 
-default_settings = {
+defaults = {
     "settings": {
         "name": "MyName",
         "mood": "happy",
     },
 }
 
-settings = Settings(Path.home() / ".mooch/settings.toml", default_settings)
+settings = Settings("mooch", defaults) # Change 'mooch' to your application's name
 
 print(settings["settings.mood"])
 settings["settings.mood"] = "angry"

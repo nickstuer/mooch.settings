@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from mooch.settings.utils import get_nested, is_valid_key, set_nested
+from mooch.settings.utils import get_nested_value, is_valid_key, set_nested_value
 
 
 @pytest.fixture
@@ -46,23 +46,23 @@ def test_is_valid_key(key, expected):
 def test_get_nested_invalid_key():
     d = {"a": {"b": {"c": 1}}}
     with pytest.raises(ValueError):  # noqa: PT011
-        get_nested(d, "a.b ")
+        get_nested_value(d, "a.b ")
     with pytest.raises(ValueError):  # noqa: PT011
-        get_nested(d, "b ")
+        get_nested_value(d, "b ")
     with pytest.raises(ValueError):  # noqa: PT011
-        get_nested(d, "b .c.d.a")
+        get_nested_value(d, "b .c.d.a")
 
 
 def test_set_nested_invalid_key():
     d = {"a": {"b": {"c": 1}}}
     with pytest.raises(ValueError):
-        set_nested(d, "a.b .c", 2)
+        set_nested_value(d, "a.b .c", 2)
     with pytest.raises(ValueError):
-        set_nested(d, "b ", 2)
+        set_nested_value(d, "b ", 2)
     with pytest.raises(ValueError):
-        set_nested(d, "b .c.d.a", 2)
+        set_nested_value(d, "b .c.d.a", 2)
     with pytest.raises(ValueError):
-        set_nested(d, "a.b.c ", 2)
+        set_nested_value(d, "a.b.c ", 2)
 
 
 @pytest.mark.parametrize(
@@ -77,7 +77,7 @@ def test_set_nested_invalid_key():
 )
 def test_set_nested(initial, key, value, expected):
     d = initial.copy()
-    set_nested(d, key, value)
+    set_nested_value(d, key, value)
     assert d == expected
 
 
@@ -94,26 +94,26 @@ def test_set_nested(initial, key, value, expected):
     ],
 )
 def test_get_nested(d, key, expected):
-    assert get_nested(d, key) == expected
+    assert get_nested_value(d, key) == expected
 
 
 def test_set_nested_with_custom_separator():
     d = {}
-    set_nested(d, "a|b|c", 10, sep="|")
+    set_nested_value(d, "a|b|c", 10, sep="|")
     assert d == {"a": {"b": {"c": 10}}}
 
 
 def test_get_nested_with_custom_separator():
     d = {"a": {"b": {"c": 42}}}
-    assert get_nested(d, "a|b|c", sep="|") == 42
+    assert get_nested_value(d, "a|b|c", sep="|") == 42
 
 
 def test_set_nested_overwrites_non_dict():
     d = {"a": 1}
-    set_nested(d, "a.b", 2)
+    set_nested_value(d, "a.b", 2)
     assert d == {"a": {"b": 2}}
 
 
 def test_get_nested_returns_none_for_non_dict():
     d = {"a": 1}
-    assert get_nested(d, "a.b") is None
+    assert get_nested_value(d, "a.b") is None

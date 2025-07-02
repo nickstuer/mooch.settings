@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from mooch.settings.filehandler import FileHandler
-from mooch.settings.utils import get_nested, set_nested
+import toml
 
+from mooch.settings.utils import get_nested_value, set_nested_value
+
+# Constants for metadata
 NOTICE_KEY = "metadata.notice"
 NOTICE = "This file was created by mooch.settings."
 CREATED_KEY = "metadata.created"
@@ -16,48 +19,72 @@ UPDATED_KEY = "metadata.updated"
 class Settings:
     def __init__(
         self,
-        settings_filepath: Path | str,
-        default_settings: dict | None = None,
+        name: str,
+        defaults: dict | None = None,
         *,
-        dynamic_reload: bool = True,
+        always_reload: bool = True,
         read_only: bool = False,
+        filepath: Path | None = None,
     ) -> None:
-        if not isinstance(settings_filepath, (Path, str)):
-            error_message = "settings_filepath must be a Path object or a string"
+        # Validate the arguments
+        if not isinstance(name, str):
+            error_message = "name must be a string"
             raise TypeError(error_message)
-        if not isinstance(default_settings, dict) and default_settings is not None:
-            error_message = "default_settings must be a dictionary or None"
-            raise TypeError(error_message)
-        if not str(settings_filepath).endswith(".toml"):
-            error_message = "settings_filepath must end with .toml"
+        if not re.fullmatch(r"[A-Za-z0-9_-]+", name):
+            error_message = "name must be alphanumeric, underscores, or dashes"
             raise ValueError(error_message)
-
-        if isinstance(settings_filepath, str):
-            settings_filepath = Path(settings_filepath)
-
-        self._settings_filepath = settings_filepath
-        self._file = FileHandler(self._settings_filepath)
-        self._last_modified_time = None
-        self.dynamic_reload = dynamic_reload
+        if not isinstance(defaults, (dict, type(None))):
+            error_message = "defaults must be a dictionary or None"
+            raise TypeError(error_message)
+        if not isinstance(always_reload, bool):
+            error_message = "always_reload must be a boolean"
+            raise TypeError(error_message)
+        if not isinstance(read_only, bool):
+            error_message = "read_only must be a boolean"
+            raise TypeError(error_message)
+        if not isinstance(filepath, (Path, type(None))):
+            error_message = "filepath must be a Path object or None"
+            raise TypeError(error_message)
+        self.always_reload = always_reload
         self.read_only = read_only
+        self._filepath = filepath if filepath else Path.home() / f".{name}" / "settings.toml"
+        self._data = {}
+        if defaults is None:
+            defaults = {}
 
-        self._initialize_source()
-        self._load()
+        self._initialize_file()
+        if not self.read_only:
+            self._initialize_defaults(defaults)
 
-        if default_settings and not self.read_only:
-            self._set_defaults(default_settings)
-            self._save()
-
-    def _initialize_source(self) -> None:
-        """Initialize the settings file with metadata values."""
-        if self._file.source_exists():
+    def _initialize_file(self) -> None:
+        """Initialize the settings file with metadata values and sets defaults for missing keys."""
+        if self._filepath.exists():
             return
-        data = {}
-        set_nested(data, NOTICE_KEY, NOTICE)
-        set_nested(data, CREATED_KEY, datetime.now(tz=timezone.utc).isoformat())
-        set_nested(data, UPDATED_KEY, datetime.now(tz=timezone.utc).isoformat())
+        self._filepath.parent.mkdir(parents=True, exist_ok=True)
+        set_nested_value(self._data, NOTICE_KEY, NOTICE)
+        set_nested_value(self._data, CREATED_KEY, datetime.now(tz=timezone.utc).isoformat())
+        set_nested_value(self._data, UPDATED_KEY, datetime.now(tz=timezone.utc).isoformat())
+        self.save()
 
-        self._file.save(data)
+    def _initialize_defaults(self, d: dict, parent_key: str = "") -> None:
+        """Recursively set default values for missing keys in the settings dictionary."""
+        for k, v in d.items():
+            full_key = f"{parent_key}.{k}" if parent_key else k
+            if self.get(full_key) is None:
+                self.set(full_key, v)
+            elif isinstance(v, dict):
+                self._initialize_defaults(v, full_key)
+
+    def save(self) -> None:
+        """Save the settings to the file and update the updated timestamp."""
+        set_nested_value(self._data, UPDATED_KEY, datetime.now(tz=timezone.utc).isoformat())
+        with Path.open(self._filepath, mode="w", encoding="utf-8") as f:
+            toml.dump(self._data, f)
+
+    def load(self) -> None:
+        """Load the settings from the file."""
+        with Path.open(self._filepath, mode="r", encoding="utf-8") as f:
+            self._data = toml.load(f)
 
     def get(self, key: str) -> Any | None:  # noqa: ANN401
         """Return a value from the configuration by key.
@@ -69,9 +96,9 @@ class Settings:
         Any | None: The value associated with the key, or None if the key does not exist.
 
         """
-        if self.dynamic_reload and self._file.source_is_modified():
-            self._data = self._file.load()
-        return get_nested(self._data, key)
+        if self.always_reload:
+            self.load()
+        return get_nested_value(self._data, key)
 
     def set(self, key: str, value: Any) -> None:  # noqa: ANN401
         """Set a value in the configuration by key.
@@ -88,11 +115,11 @@ class Settings:
             error_message = "Settings are read-only and cannot be modified."
             raise PermissionError(error_message)
 
-        if self.dynamic_reload and self._file.source_is_modified():
-            self._data = self._file.load()
+        if self.always_reload:
+            self.load()
 
-        set_nested(self._data, key, value)
-        self._file.save(self._data)
+        set_nested_value(self._data, key, value)
+        self.save()
 
     def __getitem__(self, key: str) -> Any | None:  # noqa: ANN401
         """Get an item from the configuration by key."""
@@ -102,21 +129,5 @@ class Settings:
         """Set an item in the configuration by key."""
         self.set(key, value)
 
-    def _set_defaults(self, d: dict, parent_key: str = "") -> None:
-        for k, v in d.items():
-            full_key = f"{parent_key}.{k}" if parent_key else k
-            if self.get(full_key) is None:
-                self.set(full_key, v)
-            elif isinstance(v, dict):
-                self._set_defaults(v, full_key)
-
-    def _load(self) -> None:
-        """Reload the settings from the file."""
-        self._data = self._file.load()
-
-    def _save(self) -> None:
-        """Save the settings to the file."""
-        self._file.save(self._data)
-
     def __repr__(self) -> str:  # noqa: D105
-        return f"Settings Stored at: {self._settings_filepath}"
+        return f"Settings stored at: {self._filepath}"

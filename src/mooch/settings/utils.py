@@ -10,7 +10,7 @@ def is_valid_key(key: str) -> bool:
     return bool(re.fullmatch(r"[A-Za-z0-9_-]+", key))
 
 
-def set_nested(d: dict, key: str, value: Any, sep: str = ".") -> None:  # noqa: ANN401
+def set_nested_value(d: dict, key: str, value: Any, sep: str = ".") -> None:  # noqa: ANN401
     """Set a nested value in a dictionary by key."""
     keys = key.split(sep)
     for k in keys[:-1]:
@@ -35,7 +35,7 @@ def set_nested(d: dict, key: str, value: Any, sep: str = ".") -> None:  # noqa: 
     d[keys[-1]] = value
 
 
-def get_nested(d: dict, key: str, sep: str = ".") -> Any | None:  # noqa: ANN401
+def get_nested_value(d: dict, key: str, sep: str = ".") -> Any | None:  # noqa: ANN401
     """Get a nested value from a dictionary by key."""
     keys = key.split(sep)
     for k in keys:
