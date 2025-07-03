@@ -5,6 +5,7 @@
 <img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/nickstuer/mooch.settings">
 
 ![Python Versions](https://img.shields.io/badge/python-3.9+-blue?logo=python)
+![Lines Of Code](https://tokei.rs/b1/github/nickstuer/mooch.settings)
 ![Codecov](https://img.shields.io/codecov/c/github/nickstuer/mooch.settings)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/nickstuer/mooch.settings/run_tests.yml)
 
