@@ -1,18 +1,18 @@
 # Python mooch.settings
 
 ![PyPI](https://img.shields.io/pypi/v/mooch.settings?label=mooch.settings)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/mooch.settings)
-<img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/nickstuer/mooch.settings">
-
 ![Python Versions](https://img.shields.io/badge/python-3.9+-blue?logo=python)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/mooch.settings)](https://pypistats.org/packages/mooch.settings)
+[![GitHub issues](https://img.shields.io/github/issues/nickstuer/mooch.settings.svg)](https://github.com/nickstuer/mooch.settings/issues)
+
 ![Lines Of Code](https://tokei.rs/b1/github/nickstuer/mooch.settings)
-![Codecov](https://img.shields.io/codecov/c/github/nickstuer/mooch.settings)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/nickstuer/mooch.settings/run_tests.yml)
+[![Codecov](https://img.shields.io/codecov/c/github/nickstuer/mooch.settings)](https://app.codecov.io/gh/nickstuer/mooch.settings)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/nickstuer/mooch.settings/run_tests.yml)](https://github.com/nickstuer/mooch.settings/actions/workflows/run_tests.yml)
 
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![license](https://img.shields.io/github/license/nickstuer/mooch.settings.svg)](LICENSE)
 
-A lightweight, TOML-backed configuration/settings utility that feels like a dictionary.
+A lightweight, TOML-backed configuration/settings utility that that exposes project settings as standard Python dictionaries.
 
 mooch.settings is a Python configuration library designed for simplicity and developer ergonomics. It loads settings data from TOML files and exposes them as standard Python dictionaries — allowing you to work with settings in a familiar, Pythonic way.
 
