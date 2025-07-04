@@ -14,7 +14,7 @@
 
 A lightweight, TOML-backed configuration/settings utility that feels like a dictionary.
 
-mooch.settings is a Python configuration library designed for simplicity and developer ergonomics. It loads settings data from TOML files and exposes them as standard Python dictionaries — allowing you to work with settings in a familiar, Python way.
+mooch.settings is a Python configuration library designed for simplicity and developer ergonomics. It loads settings data from TOML files and exposes them as standard Python dictionaries — allowing you to work with settings in a familiar, Pythonic way.
 
 ## Table of Contents
 
@@ -26,11 +26,11 @@ mooch.settings is a Python configuration library designed for simplicity and dev
 
 ## 📖 Features
 
- - TOML-powered: Uses toml under the hood for modern, human-friendly settings files.
- - Dictionary-like interface: Access and manipulate settings with regular dict operations.
- - Nested access: Supports nested keys with dotted key notation.
- - Safe defaults: Easily provide fallback values or defaults when keys are missing from the setting file.
- - Optional always reload: Reloads setting file everytime a key is read. (Enabled by default)
+- TOML-powered: Uses TOML under the hood for modern, human-friendly settings files.
+- Dictionary-like interface: Access and manipulate settings with regular dictionary operations.
+- Nested access: Supports nested keys with dotted key notation.
+- Optional `defaults`: Provide default values for initializing the settings file or for when a key is missing in the settings file.
+- Optional `always_reload`: Reload the setting file everytime a key is read. (Enabled by default)
 
 
 ## 🛠 Install
