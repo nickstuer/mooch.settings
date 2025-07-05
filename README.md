@@ -1,28 +1,28 @@
-# Python mooch.settings
+# mooch-settings
 
-![PyPI](https://img.shields.io/pypi/v/mooch.settings?label=mooch.settings)
+![PyPI](https://img.shields.io/pypi/v/mooch-settings?label=mooch-settings)
 ![Python Versions](https://img.shields.io/badge/python-3.9+-blue?logo=python)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/mooch.settings)](https://pypistats.org/packages/mooch.settings)
-[![GitHub issues](https://img.shields.io/github/issues/nickstuer/mooch.settings.svg)](https://github.com/nickstuer/mooch.settings/issues)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/mooch-settings)](https://pypistats.org/packages/mooch-settings)
+[![GitHub issues](https://img.shields.io/github/issues/nickstuer/mooch-settings.svg)](https://github.com/nickstuer/mooch-settings/issues)
 
-![Lines Of Code](https://tokei.rs/b1/github/nickstuer/mooch.settings)
-[![Codecov](https://img.shields.io/codecov/c/github/nickstuer/mooch.settings)](https://app.codecov.io/gh/nickstuer/mooch.settings)
-[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/nickstuer/mooch.settings/run_tests.yml)](https://github.com/nickstuer/mooch.settings/actions/workflows/run_tests.yml)
+![Lines Of Code](https://tokei.rs/b1/github/nickstuer/mooch-settings)
+[![Codecov](https://img.shields.io/codecov/c/github/nickstuer/mooch-settings)](https://app.codecov.io/gh/nickstuer/mooch-settings)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/nickstuer/mooch-settings/run_tests.yml)](https://github.com/nickstuer/mooch-settings/actions/workflows/run_tests.yml)
 
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-[![license](https://img.shields.io/github/license/nickstuer/mooch.settings.svg)](LICENSE)
+[![license](https://img.shields.io/github/license/nickstuer/mooch-settings.svg)](LICENSE)
 
 A lightweight, TOML-backed configuration/settings utility that that exposes project settings as standard Python dictionaries.
 
-mooch.settings is a Python configuration library designed for simplicity and developer ergonomics. It loads settings data from TOML files and exposes them as standard Python dictionaries — allowing you to work with settings in a familiar, Pythonic way.
+mooch-settings is a Python configuration library designed for simplicity and developer ergonomics. It loads settings data from TOML files and exposes them as standard Python dictionaries — allowing you to work with settings in a familiar, Pythonic way.
 
 ## Table of Contents
 
-- [Features](https://github.com/nickstuer/mooch.settings?tab=readme-ov-file#-features)
-- [Install](https://github.com/nickstuer/mooch.settings?tab=readme-ov-file#-install)
-- [Usage](https://github.com/nickstuer/mooch.settings?tab=readme-ov-file#-usage)
-- [Contributing](https://github.com/nickstuer/mooch.settings?tab=readme-ov-file#-contributing)
-- [License](https://github.com/nickstuer/mooch.settings?tab=readme-ov-file#-license)
+- [Features](https://github.com/nickstuer/mooch-settings?tab=readme-ov-file#-features)
+- [Install](https://github.com/nickstuer/mooch-settings?tab=readme-ov-file#-install)
+- [Usage](https://github.com/nickstuer/mooch-settings?tab=readme-ov-file#-usage)
+- [Contributing](https://github.com/nickstuer/mooch-settings?tab=readme-ov-file#-contributing)
+- [License](https://github.com/nickstuer/mooch-settings?tab=readme-ov-file#-license)
 
 ## 📖 Features
 
@@ -37,11 +37,11 @@ mooch.settings is a Python configuration library designed for simplicity and dev
 
 ```
 # PyPI
-pip install mooch.settings
+pip install mooch-settings
 ```
 or
 ```
-uv add mooch.settings
+uv add mooch-settings
 ```
 
 ##  📌 Dependencies
@@ -52,7 +52,7 @@ Python 3.9 or greater
 ### Example
 This will create/use a 'settings.toml' file located in the '.mooch' directory of the user's home directory.
 ```python
-from mooch.settings import Settings
+from mooch-settings import Settings
 
 defaults = {
     "settings": {
@@ -74,12 +74,12 @@ PRs accepted.
 If editing the Readme, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
 
 #### Bug Reports and Feature Requests
-Please use the [issue tracker](https://github.com/nickstuer/mooch.settings/issues) to report any bugs or request new features.
+Please use the [issue tracker](https://github.com/nickstuer/mooch-settings/issues) to report any bugs or request new features.
 
 #### Contributors
 
-<a href = "https://github.com/nickstuer/mooch.settings/graphs/contributors">
-  <img src = "https://contrib.rocks/image?repo=nickstuer/mooch.settings"/>
+<a href = "https://github.com/nickstuer/mooch-settings/graphs/contributors">
+  <img src = "https://contrib.rocks/image?repo=nickstuer/mooch-settings"/>
 </a>
 
 ## 📃 License

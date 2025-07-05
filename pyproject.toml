@@ -1,16 +1,16 @@
 [project]
-name = "mooch.settings"
-version = "1.2.1"
+name = "mooch-settings"
+version = "2.0.0"
 authors = [
   { name="Nick Stuer", email="nickstuer@duck.com" },
 ]
-description = "A lightweight, TOML-backed configuration/settings utility that that exposes project settings as standard Python dictionaries"
+description = "A lightweight, TOML-backed configuration/settings utility that that exposes project settings as standard Python dictionaries."
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
     "toml>=0.10.2",
 ]
-# How mature is this project? Common values are
+# Development Status :: Common values are:
   #   3 - Alpha
   #   4 - Beta
   #   5 - Production/Stable
@@ -22,8 +22,8 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/nickstuer/mooch.settings"
-Issues = "https://github.com/nickstuer/mooch.settings/issues"
+Homepage = "https://github.com/nickstuer/mooch-settings"
+Issues = "https://github.com/nickstuer/mooch-settings/issues"
 
 [tool.pytest.ini_options]
 pythonpath = [
@@ -37,7 +37,7 @@ testpaths = [
 line-length = 120
 show-fixes = true
 lint.select = [
-    "ALL", # include all the rules, including new ones
+    "ALL",
 ]
 lint.ignore = [
   "D100",
